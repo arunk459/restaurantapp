@@ -43,7 +43,7 @@ class Login extends Component {
          console.log('response :',res);
         if(res.data.status == "1"){
           console.log('response :',res);
-          this.props.handleLoginUser(res);
+          this.props.handleLoginUser(res.data);
         this.props.navigation.navigate('Home')
         }
       }).catch(error => {

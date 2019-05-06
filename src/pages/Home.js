@@ -45,12 +45,12 @@ class Home extends Component {
   }
    
   init = async () => {
-    let sdata = await AsyncStorage.getItem('userData');
-    sdata = JSON.parse(sdata);
-    this.getBuilding(sdata.user.city_id);
-    this.fetchBanners();
-    this.fetchDeliveryTimes();
-    await this.fetchMenue(sdata.menu_id);
+   // let sdata = await AsyncStorage.getItem('userData');
+   // sdata = JSON.parse(sdata);
+   this.fetchBanners();
+   this.fetchDeliveryTimes();
+    await this.getBuilding(this.props.auth.user.user.city_id);
+   // await this.fetchMenue(this.props.app.realtedBuilding[0].menu_id);
   }
 
   getCity = () => {
@@ -68,6 +68,8 @@ class Home extends Component {
         this.props.setKey({ prop: 'realtedBuilding', value: res.data.buildings });
 
       }
+    }).then(()=>{
+      this.fetchMenue(this.props.app.realtedBuilding[0].menu_id);
     }).catch(error => { console.log('error', error); });
   }
 
@@ -172,8 +174,8 @@ class Home extends Component {
     fetch_menu_items_new(menu_id).then(res => {
 
       if (res.data.status == 1) {
-        this.props.setKey({ prop: 'menu_items', value: res.data.categories });
-        this.props.setKey({ prop: 'city_id', value: res.data.categories });
+         this.props.setKey({ prop: 'menu_items', value: res.data.categories });
+       // this.props.setKey({ prop: 'city_id', value: res.data.categories });
         this.setState({ 'loading': false });
       }
     }).catch(error => {
@@ -228,7 +230,7 @@ class Home extends Component {
       <View style={{flex:1}}>
       <View style={styles.header}>
             <View style={{flexDirection:'column'}}>
-              <Text style={{fontSize:15,fontWeight:'bold',width:80,color:'#333',padding:10}}>Hii,Priya</Text>
+              <Text style={{fontSize:15,fontWeight:'bold',width:80,color:'#333',padding:10}}>{this.props.auth.user.user.name}</Text>
               <View style={{flexDirection:'row', left:10,top:-30}}>
                   <Picker style={{ height:75, width: 150}}
                       selectedValue={this.props.app.city_id}
