@@ -40,9 +40,7 @@ class Login extends Component {
       formData.append('email', username);
       formData.append('password', password);
       fetch_login(formData).then(res => {
-         console.log('response :',res);
         if(res.data.status == "1"){
-          console.log('response :',res);
           this.props.handleLoginUser(res.data);
         this.props.navigation.navigate('Home')
         }
@@ -51,7 +49,6 @@ class Login extends Component {
       });
 }
     render() {
-      console.log(this.props);
       return (
         // <SafeAreaView style={styles.container}>
         //   <StatusBar barStyle="light-content"/>

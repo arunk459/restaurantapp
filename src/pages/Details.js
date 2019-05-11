@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import {Alert} from 'react-native';
 import Fonticons from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/AntDesign';
+
 import {
     Platform,
     StyleSheet,
@@ -17,8 +19,10 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import Loader from "./Loader";
 import CustomMultiPicker from "./multipleSelect";
-import { add_to_cart, fetch_product_details, submit_product_review } from '../services/Auth';
-// import { NetworkInfo } from 'react-native-network-info';
+import { add_to_cart, fetch_product_details, submit_product_review,add_to_wishlist } from '../services/Auth';
+//   import { NetworkInfo } from 'react-native-network-info';
+ //import DeviceInfo from 'react-native-device-info';
+
 
 class Details extends Component {
     state = {
@@ -28,38 +32,41 @@ class Details extends Component {
         checked: {},
         quantity: 1
     }
-    static navigationOptions = ({ navigation }) => {
-        return {
-            headerTitle: 'Details',
-            headerTintColor: '#000',
-            headerTitleStyle: {
-                fontWeight: '100',
-                fontSize: 15
-            },
-            headerRight: (
-                <View style={styles.iconContainer}>
-                    <Fonticons name="heart-o" size={20} color="#000" />
-                    <Fonticons name="shopping-cart" size={20} color="#000" onPress={() =>this.props.navigation.navigate('Mycart')}/>
-                </View>
-            ),
-            headerLeft: (
-                <View style={styles.lefticon}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                        <Ionicons name="arrowleft" size={22} color="#000" />
-                    </TouchableOpacity>
 
-                </View>
-            ),
-        };
-    };
+    static navigationOptions = {
+        header: null,
+      }
+    // static navigationOptions = ({ navigation }) => {
+        
+    //     return {
+    //         headerTitle: 'Details',
+    //         headerTintColor: '#000',
+    //         headerTitleStyle: {
+    //             fontWeight: '100',
+    //             fontSize: 15
+    //         },
+    //         headerRight: (
+    //             <View style={styles.iconContainer}>
+    //                 <Fonticons name="heart-o" size={20} color="#000" />
+    //                 <TouchableOpacity onPress={() =>{navigation.navigate('Mycart')}}>
+    //                     <Fonticons name="shopping-cart" size={20} color="#000" />
+    //                 </TouchableOpacity>
+    //             </View>
+    //         ),
+    //         headerLeft: (
+    //             <View style={styles.lefticon}>
+    //                 <TouchableOpacity onPress={() => navigation.navigate.goBack()}>
+    //                     <Ionicons name="arrowleft" size={22} color="#000" />
+    //                 </TouchableOpacity>
+
+    //             </View>
+    //         ),
+    //     };
+    // };
 
     componentDidMount() {
         this.getProductDetails(this.props.app.selectedProduct.id);
-        //
-        // NetworkInfo.getIPV4Address(ip => {
-
-        //     this.props.setKey({ prop: 'mac', value: ip });
-        // });
+        this.props.setKey({prop: 'mac',value:this.props.auth.user.user.email})
 
     }
     getProductDetails = (productId) => {
@@ -156,16 +163,11 @@ class Details extends Component {
                 })
 
             };
-
-
         }
          ;
         formData.append('prod_ids', addonIds.toString());
-        console.log('formData', formData);
         add_to_cart(formData).then(res => {
-            // console.log('response :',res);
             if (res.data.status == 1) {
-                this.props.pushArray({ prop: 'cart', value: formData });
                 this.props.navigation.navigate('MyCart')
             }
         }).catch(error => {
@@ -189,17 +191,59 @@ class Details extends Component {
         this.setState({ 'rating': rating });
     }
 
+    addToFavourite = ()=>{
+        add_to_wishlist(this.props.auth.user.user.id,this.props.app.selectedProduct.id).then((res)=>{
+            if (res.data.status == 1) {
+                Alert.alert("Message",res.data.message);
+            }
+            if (res.data.status == 0) {
+                Alert.alert("Message",res.data.message);
+            }
+        }).catch(error => {
+            console.log('error', error);
+        });
+        
+
+    }
+
     render() {
         let app = this.props.app;
-        // console.log('props', this.props.app);
-        console.log('checked', this.state);
         if (!app.product) {
             return <Loader
                 loading={true} />
         }
         return (
             <View style={{ flex: 1 }}>
-
+            <View style={{flexDirection:'row',height:60}}>
+                <TouchableOpacity style={{flex:0.2,justifyContent:'center',alignItems:'center'}} onPress={() => this.props.navigation.navigate('Home')}>
+                    <Ionicons name="arrowleft" size={22} color="#000" />
+                 </TouchableOpacity>
+                <View style={{flex:0.4,justifyContent:'center'}}>
+                    <Text  style={{fontSize:15,fontWeight:'bold',width:80,color:'#333',paddingLeft:10}}>Details</Text>
+                </View>
+                <View style={{flex:0.4,justifyContent:'flex-end',alignItems:'center',flexDirection:'row'}}>
+                <TouchableOpacity onPress={()=>{this.addToFavourite()}}>
+                    <Fonticons name="heart-o" size={25} color="#000" style={{paddingRight:20}}/>
+                 </TouchableOpacity>
+                 <TouchableOpacity onPress={() =>this.props.navigation.navigate('MyCart')} style={{paddingRight:20,flexDirection:'row',alignItems:'center'}}>
+                 <Fonticons name="shopping-cart" size={25} color="#000" />
+                 <Text>{`(${this.props.app.cart.length})`}</Text>
+                 </TouchableOpacity>
+              </View>
+              {/* <View style={{flex:0.65,flexDirection:'column'}}>
+                <View style={{flex:0.5,justifyContent:'center',alignItems:'center'}}>
+                   <Text style={{fontSize:15,fontWeight:'bold',width:80,color:'#333',paddingLeft:10}}>Details</Text>                    
+                </View>
+                
+              </View>
+              <View style={{flex:0.35,justifyContent:'flex-end',alignItems:'center',flexDirection:'row'}}>
+                 <Ionicons name="heart-o" size={25} color="#000" style={{paddingRight:20}}/>
+                 <TouchableOpacity onPress={() =>this.props.navigation.navigate('Mycart')} style={{paddingRight:20,flexDirection:'row',alignItems:'center'}}>
+                 <Ionicons name="shopping-cart" size={25} color="#000" />
+                 <Text>{`(${this.props.app.cart.length})`}</Text>
+                 </TouchableOpacity>
+              </View> */}
+            </View>
                 <ScrollView style={styles.container}>
                     <View style={styles.imagecontainer}>
                         <Image
@@ -250,10 +294,9 @@ class Details extends Component {
                             type="star"
                             ratingCount={5}
                             fractions={0}
-                            startingValue={0}
+                            startingValue={this.state.rating}
                             imageSize={25}
                             onFinishRating={this.ratingCompleted}
-                            // showRating
                             style={{ paddingVertical: 10 }}
                         />
                         <View style={styles.reviewtext1}>
@@ -301,7 +344,8 @@ class Details extends Component {
         );
     }
 }
-const mapStateToProps = rstate => { return rstate; };
+const mapStateToProps = state => { return state; };
+
 
 export default connect(mapStateToProps, actions)(Details);
 

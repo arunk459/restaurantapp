@@ -6,10 +6,24 @@ import {
 } from 'react-native';
 export const serviceurl = "https://ezzybitetest.azurewebsites.net/admin/service_react";
 
+
 export const fetch_login = (formData) => {
     return axios.post(serviceurl + '/login', formData);
 
 }
+
+export const delete_from_cart = (itemId) => {
+    return axios.post(serviceurl + '/delete_from_cart'+'/'+itemId);
+}
+
+export const add_to_wishlist = (userId,itemId) => {
+    return axios.post(serviceurl + '/add_to_wishlist'+'/'+userId+'/'+itemId);
+}
+
+export const fetch_wishlist = (userId)=>{
+    return axios.get(serviceurl + '/view_wish_list'+'/'+userId);
+}
+
 export const fetch_cities = () => {
     return axios.post(serviceurl + '/fetch_city_list');
 
@@ -62,10 +76,10 @@ export const view_cart = (formData) => {
 
 }
 
-export const delete_from_cart = (formData) => {
-    return axios.post(serviceurl + '/delete_from_cart', formData);
+// export const delete_from_cart = (formData) => {
+//     return axios.post(serviceurl + '/delete_from_cart', formData);
 
-}
+// }
 
 export const update_cart = (formData) => {
     return axios.post(serviceurl + '/update_cart', formData);

@@ -125,7 +125,6 @@ class Starter extends Component {
 
 
   render() {
-    console.log(this.props);
     // if (this.state.loading) {
 
     //         return <Spinner />
@@ -156,7 +155,6 @@ class Starter extends Component {
               </Picker>
               <Picker
                 selectedValue={this.props.app.building_id}
-
                 onValueChange={(itemValue, itemIndex) => {
                   if (!itemValue) return;
                   this.props.setKey({ prop: 'building_id', value: itemValue });
@@ -171,7 +169,7 @@ class Starter extends Component {
                 {makeDropDown(this.props.app.realtedBuilding)}
               </Picker>
               <TouchableOpacity style={styles.buttoncontainer}>
-                <Text style={styles.buttontext} onPress={() => this.props.navigation.navigate('Register', { city_id: this.sate.city_id, building_id: this.state.building_id })}>GET STARTED</Text>
+                <Text style={styles.buttontext} onPress={() => this.props.navigation.navigate('Register', { city_id: this.state.city_id, building_id: this.state.building_id })}>GET STARTED</Text>
               </TouchableOpacity>
               <View style={styles.viewtext}>
                 <Text style={styles.textdata}>Already Registered ? </Text>
@@ -181,9 +179,9 @@ class Starter extends Component {
               <TouchableOpacity style={styles.buttoncontainer} onPress={this._signIn}>
                 <Text style={styles.buttontext}>GOOGLE LOGIN</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.buttoncontainer} onPress={() => this.props.navigation.navigate('Home')}>
+              {/* <TouchableOpacity style={styles.buttoncontainer} onPress={() => this.props.navigation.navigate('Home')}>
                 <Text style={styles.buttontext}>GOOGLE LOGIN</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </ImageBackground>
 

@@ -9,16 +9,17 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  Picker, AsyncStorage
+  Picker, AsyncStorage,Dimensions
 } from 'react-native';
 import GridLayout from 'react-native-layout-grid';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import {makeDropDown, fetch_cities, fetch_buildings, fetch_banners, fetch_delivery_times, fetch_menu_items_new } from '../services/Auth';
+import {makeDropDown, fetch_cities, fetch_buildings, fetch_banners, fetch_delivery_times, fetch_menu_items_new,view_cart } from '../services/Auth';
 import Loader from "./Loader";
 
 
 
+const {height} = Dimensions.get("window");
 class Home extends Component {
   state = {
     user: '', city: [],
@@ -30,7 +31,6 @@ class Home extends Component {
     realtedBuilding: [],
     menu_id: '',
     loading: true,
-    building_id: "",
     city_id: "",
   }
 
@@ -38,10 +38,28 @@ class Home extends Component {
     header: null,
   }
   componentDidMount =()=> {
+    this.props.setKey({prop: 'mac',value:this.props.auth.user.user.email});
     this.init();
+    this.getMyCart();
     setTimeout(()=>{
       this.setState({loading:false});
     },3000)
+  }
+
+  getMyCart = () => {
+    var formData = new FormData();  
+    formData.append('device_id', this.props.auth.user.user.email);
+    formData.append('building_id', this.props.app.building_id);
+    view_cart(formData).then(res => {
+
+      
+      if (res.data.status == 1) {
+        this.props.setProducts({ prop: 'cart_products', value: [] });        
+        this.props.setProducts({ prop: 'cart_products', value: res.data.cart_products });
+      }
+    }).catch(error => {
+      console.log('error', error);
+    });
   }
    
   init = async () => {
@@ -50,14 +68,12 @@ class Home extends Component {
    this.fetchBanners();
    this.fetchDeliveryTimes();
     await this.getBuilding(this.props.auth.user.user.city_id);
-   // await this.fetchMenue(this.props.app.realtedBuilding[0].menu_id);
   }
 
   getCity = () => {
     fetch_cities().then(res => {
       if (res.data.status == 1) {
         this.props.navigation.setParams({ 'city': res.data.cities });
-        // console.log(this.cities);
       }
     }).catch(error => { console.log('error', error); });
   }
@@ -66,7 +82,6 @@ class Home extends Component {
     fetch_buildings(cityId).then(res => {
       if (res.data.status == 1) { 
         this.props.setKey({ prop: 'realtedBuilding', value: res.data.buildings });
-
       }
     }).then(()=>{
       this.fetchMenue(this.props.app.realtedBuilding[0].menu_id);
@@ -118,12 +133,12 @@ class Home extends Component {
   }
 
   renderCategory(item) {
-
+    
     if (item) {
       if (!item.avg_rating) { item.avg_rating = 0 }
 
       return (
-        <View style={styles.itemcontainer}>
+        <View style={{flex:1}}>
 
           <TouchableOpacity onPress={() => this.getProductDetails(item)} style={styles.itemimage}>
             <Image
@@ -131,19 +146,19 @@ class Home extends Component {
               source={{ uri: item.image }}
             />
           </TouchableOpacity>
-
-
-          <View style={styles.itemtext}>
+          <View>
             <Text style={styles.name}>{item.name}</Text>
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-              {Array(item.avg_rating).fill(<Ionicons name="star" size={12} color="#FF4500" />)}
-              <TouchableOpacity style={styles.buttoncontainer} onPress={() => this.getProductDetails(item)}>
-                <Text style={styles.buttontext}>Add</Text>
-              </TouchableOpacity>
+          </View>
+          <View style={{flexDirection:'row',justifyContent:'space-between',}}>
+            <View style={{flexDirection:'row',alignItems:'center'}}>
+                <Ionicons name="star" size={12} color="#f2a832" />
+                <Text style={[styles.name,{paddingHorizontal:5}]}>{item.avg_rating}</Text>
             </View>
+            <TouchableOpacity style={styles.buttoncontainer} onPress={() => this.getProductDetails(item)}>
+                <Text style={styles.buttontext}>ADD</Text>
+            </TouchableOpacity>
           </View>
         </View>
-
       );
     } else {
       return <View style={styles.itemcontainer}></View>
@@ -160,7 +175,6 @@ class Home extends Component {
 
   fetchBanners = () => {
     fetch_banners().then(res => {
-      //console.log('response :',res);
       if (res.data.status == 1) {
         this.props.setKey({ prop: 'banners', value: res.data.banners });
       }
@@ -225,93 +239,90 @@ class Home extends Component {
         return <Loader
           loading={this.state.loading} />
       }
-    console.log('props', this.props);
     return (
-      <View style={{flex:1}}>
-      <View style={styles.header}>
-            <View style={{flexDirection:'column'}}>
-              <Text style={{fontSize:15,fontWeight:'bold',width:80,color:'#333',padding:10}}>{this.props.auth.user.user.name}</Text>
-              <View style={{flexDirection:'row', left:10,top:-30}}>
-                  <Picker style={{ height:75, width: 150}}
-                      selectedValue={this.props.app.city_id}
-                      onValueChange={(itemValue, itemIndex) => { 
-                        this.props.setKey({ prop: 'city_id', value: itemValue });
-                        this.getBuilding(itemValue);
+    
+    <View style={{flex:1}}>
+        <View style={styles.header}>
+              <View style={{flex:0.65,flexDirection:'column'}}>
+                <View style={{flex:0.5,justifyContent:'center'}}>
+                   <Text style={{fontSize:15,fontWeight:'bold',width:80,color:'#333',paddingLeft:10}}>Hi{"  "+this.props.auth.user.user.name}</Text>                    
+                </View>
+                <View style={{flex:0.5,flexDirection:'row',alignItems:'center'}}>
+                <Picker style={{width:'50%'}}
+                    selectedValue={this.props.app.city_id}
+                    onValueChange={(itemValue, itemIndex) => { 
+                      this.props.setKey({ prop: 'city_id', value: itemValue });
+                      this.getBuilding(itemValue);
+                    }
+                    }>
+                    {makeDropDown(this.props.app.city)}
+                </Picker> 
+                <Picker style={{width:'50%'}}
+                selectedValue={this.props.app.building_id}
+                    onValueChange={(itemValue, itemIndex) => {
+                      if (!itemValue) return;
+                      this.props.setKey({ prop: 'building_id', value: itemValue });
+                      let obj = this.props.app.realtedBuilding.find(o => o.id === itemValue);
+                      if (obj.menu_id) {
+                        this.props.setKey({ prop: 'menu_id', value: obj.menu_id });
+                        this.fetchMenue(obj.menu_id);
                       }
-                      }>
-                      {makeDropDown(this.props.app.city)}
-                    </Picker>
-                    <Picker
-                      style={{ height:75, width: 150}}
-                      selectedValue={this.props.app.building_id}
-  
-                      onValueChange={(itemValue, itemIndex) => {
-                        if (!itemValue) return;
-                        this.props.setKey({ prop: 'building_id', value: itemValue });
-                        let obj = this.props.app.realtedBuilding.find(o => o.id === itemValue);
-                        if (obj.menu_id) {
-                          this.props.setKey({ prop: 'menu_id', value: obj.menu_id });
-                          this.fetchMenue(obj.menu_id);
-                        }
-                      }
-  
-                      }>
-                      {makeDropDown(this.props.app.realtedBuilding)}
-                    </Picker>
-                  </View>
-            </View> 
-            <View style={styles.iconContainer}>
-                <Ionicons name="heart-o" size={20} color="#000" />
-                <Ionicons name="shopping-cart" size={20} color="#000" onPress={() =>this.props.navigation.navigate('Mycart')}/>
-            </View>
-         </View>
-      <ScrollView style={styles.container}>
-       <View style={styles.swipercontainer}>
-          <Swiper>
-           {this.renderBannner()}
-          </Swiper>
-        </View>
-        <View style={{ height: 90 }}>
-          <Text style={styles.text}>Delivery Times</Text>
-          <Swiper activeDotStyle={{ backgroundColor: 'transparent', borderWidth: 1, borderColor: '#fff' }}>
-            <View style={styles.timerview} >
-              {this.renderDelveryTime()}
-
-            </View>
-          </Swiper>
-
-        </View>
-
-        {
-
-          this.props.app.menu_items && this.props.app.menu_items.map(d => {
-            if (d.products.length == 0) return null;
-            return (<View style={styles.flex}>
-              <View style={styles.categorytext}>
-                <Text style={styles.text}>{d.name}</Text>
+                    }
+                    }>
+                    {makeDropDown(this.props.app.realtedBuilding)}
+                </Picker>           
+                </View>
               </View>
-              {d.products.length > 0 &&
+              <View style={{flex:0.35,justifyContent:'flex-end',alignItems:'center',flexDirection:'row'}}>
+              <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Favourities')}}>
+                 <Ionicons name="heart-o" size={25} color="#000" style={{paddingRight:20}}/>
+              </TouchableOpacity>
+                 <TouchableOpacity onPress={() =>this.props.navigation.navigate('MyCart')} style={{paddingRight:20,flexDirection:'row',alignItems:'center'}}>
+                 <Ionicons name="shopping-cart" size={25} color="#000" />
+                 <Text>{`(${this.props.app.cart.length})`}</Text>
+                 </TouchableOpacity>
+              </View>
+        </View>
+        <ScrollView style={{flex:1}} contentContainerStyle={{paddingBottom:30}}>
+          <View style={{backgroundColor:'black',height:height/3}}>
+            <Swiper>
+              {this.renderBannner()}
+            </Swiper>
+         </View>
+         <View style={{ height: 90 }}>
+           <Text style={styles.text}>Delivery Times</Text>
+           <Swiper activeDotStyle={{ backgroundColor: 'transparent', borderWidth: 1, borderColor: '#fff' }}>
+             <View style={styles.timerview} >
+               {this.renderDelveryTime()}
+             </View>
+           </Swiper>
+         </View>
+         {
 
-
-                <GridLayout
-                  items={d.products}
-                  itemsPerRow={2}
-                  renderItem={this.renderGridItem}
-                />}
-
-            </View>)
-          }
-          )
-        }
-
-      </ScrollView>
+      this.props.app.menu_items && this.props.app.menu_items.map(d => {
+        if (d.products.length == 0) return null;
+        return (
+        <View style={styles.flex}>
+          <View style={styles.categorytext}>
+            <Text style={styles.text}>{d.name}</Text>
+          </View>
+          {d.products.length > 0 &&
+            <GridLayout
+              items={d.products}
+              itemsPerRow={2}
+              renderItem={this.renderGridItem}
+            />}
+        </View>)
+      }
+      )
+    }
+        </ScrollView>
     </View>
     );
   }
 } 
 
 const mapStateToProps = state => { 
-  console.log("state",state);
   return state; };
 
 export default connect(mapStateToProps, actions)(Home);
@@ -321,7 +332,6 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontSize: 15,
     padding: 8,
-
   },
   header:{
     flexDirection: 'row',
@@ -332,9 +342,9 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    width: 100,
-    padding:20,
-   left:-10
+    // width: 100,
+    // padding:20,
+  //  left:-10
 },
   container: {
     flex: 1,
@@ -370,7 +380,6 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
-
   },
   item: {
     height: 100,
@@ -379,10 +388,8 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 12,
-    textAlign: 'left',
     color: '#000000',
     fontWeight: '400',
-    marginBottom: 5
   },
   categorytext: {
     flex: 1
@@ -397,14 +404,11 @@ const styles = StyleSheet.create({
   },
   itemtext: {
     height: 60,
-    // backgroundColor:'green',
     padding: 10
   },
   imageview: {
     height: '100%',
     width: '100%',
-    position: 'absolute',
-
   },
   buttoncontainer: {
     borderWidth: 1,
@@ -412,10 +416,8 @@ const styles = StyleSheet.create({
     borderColor: '#3fb265',
     fontSize: 11,
     fontWeight: 'bold',
-    padding: 12,
-    justifyContent: 'space-around',
-    marginLeft: 100
-
+    paddingHorizontal:10,
+    justifyContent: 'center',
   },
   buttontext: {
     textAlign: 'center',

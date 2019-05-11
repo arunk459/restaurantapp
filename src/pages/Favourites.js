@@ -10,7 +10,20 @@ import {
     } from 'react-native'; 
 
 import GridLayout from 'react-native-layout-grid';
-export default class Favourites extends Component {
+import { connect } from 'react-redux';
+
+
+import { fetch_wishlist } from '../services/Auth';
+import * as actions from '../actions';
+
+
+class Favourites extends Component {
+
+  componentDidMount(){
+    fetch_wishlist(this.props.auth.user.user.id).then(res =>{
+          this.props.setFavouriteProducts({prop : 'set_fav_products',value : res.data.products});
+    })
+  }
     static navigationOptions  = ({ navigation }) => {
         return {
             headerTitle: 'Favourites',
@@ -21,7 +34,7 @@ export default class Favourites extends Component {
             },
             headerLeft: (
                 <View style={styles.lefticon}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrowleft" size={22} color="#000" />  
                     </TouchableOpacity>
                 
@@ -29,43 +42,71 @@ export default class Favourites extends Component {
             ),
             };       
         };
-    renderGridItem = (item) => (
-       
-                <View style={styles.itemcontainer}>
-                <View style={styles.itemimage}>
+      renderCategory = (item) => {
+        if (item) {
+          return (
+            <View style={styles.itemcontainer}>
+                <View style={{flex:0.5}} >
                 <Image 
                 style={styles.imageview}
-                source={require('../images/banner1.jpg')}
+                source={item ? {uri : item.product_image } :require('../images/banner1.jpg')}
                 />
                 </View>
-                <View style={styles.itemtext}>
-                <Text style={styles.name}>Item Name</Text>
+                <View>
+                <Text style={styles.name}>{item ? item.product_name : ""}</Text>
                 <View style={{flex:1,flexDirection:'row'}}>
-                        <Ionicons name="star" size={12} color="#FF4500"/> 
+                        <Ionicons name="star" size={12} color="#FF4500"/>
+                        <Text>{item ? item.rate : ""}</Text> 
                         <TouchableOpacity style={styles.buttoncontainer} onPress={this.login}>
                             <Text style={styles.buttontext}>Add</Text>
                         </TouchableOpacity>
                 </View>
                 </View>
         </View>
-    );
-    render() {
-        const items = [];
+          );
+        } else {
+          return <View style={styles.itemcontainer}></View>
+        }
        
-        //let x=1;
-        for (let x = 1; x <= 5; x++) {
-           
-          items.push({
-            name: `Grid ${x}`
-          });
-         // Alert.alert(items);
-       }
+        //         <View style={styles.itemcontainer}>
+        //         <View style={styles.itemimage}>
+        //         <Image 
+        //         style={styles.imageview}
+        //         source={item ? {uri : item.product_image } :require('../images/banner1.jpg')}
+        //         />
+        //         </View>
+        //         <View style={styles.itemtext}>
+        //         <Text style={styles.name}>{item ? item.product_name : ""}</Text>
+        //         <View style={{flex:1,flexDirection:'row'}}>
+        //                 <Ionicons name="star" size={12} color="#FF4500"/>
+        //                 <Text>{item ? item.rate : ""}</Text> 
+        //                 <TouchableOpacity style={styles.buttoncontainer} onPress={this.login}>
+        //                     <Text style={styles.buttontext}>Add</Text>
+        //                 </TouchableOpacity>
+        //         </View>
+        //         </View>
+        // </View>
+        
+    };
+
+    renderGridItem = (item) => {
+      if (item) {
+        return this.renderCategory(item);
+      } else {
+        return <View style={styles.itemcontainer}></View>
+      }
+  
+    }
+  
+    render() {
+        const items = this.props.app.favProducts;
+       
         return (
            <ScrollView style={styles.container}>
                  <View style={styles.flex}>
                     <GridLayout
-                        items={items}
-                        itemsPerRow={2}
+                        items={this.props.app.favProducts}
+                        itemsPerRow={1}
                         renderItem={this.renderGridItem}
                     />
                 </View>                
@@ -74,6 +115,11 @@ export default class Favourites extends Component {
  
     }
 }
+
+const mapStateToProps = state => { 
+  return state; };
+
+export default connect(mapStateToProps, actions)(Favourites);
 const styles = StyleSheet.create({
     container: {
       flex: 1,

@@ -14,7 +14,7 @@ import {
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import Loader from "./Loader";
-import { view_cart } from '../services/Auth';
+import { view_cart,delete_from_cart } from '../services/Auth';
 
 class Mycart extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -33,7 +33,7 @@ class Mycart extends Component {
       ),
       headerLeft: (
         <View style={styles.lefticon}>
-          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrowleft" size={22} color="#000" />
           </TouchableOpacity>
 
@@ -50,19 +50,27 @@ class Mycart extends Component {
     formData.append('device_id', this.props.app.mac);
     formData.append('building_id', this.props.app.building_id);
     view_cart(formData).then(res => {
-
-      console.log('productDetail :', res.data.product);
       if (res.data.status == 1) {
-        this.props.setKey({ prop: 'cart_products', value: res.data.cart_products });
+        this.props.setProducts({ prop: 'cart_products', value: [] });
+        this.props.setProducts({ prop: 'cart_products', value: res.data.cart_products });
       }
     }).catch(error => {
       console.log('error', error);
     });
   }
-  render() {
-    let cart_products = this.props.app.cart_products;
+  removeItem = (id)=>{
+    delete_from_cart(id).then(res =>{
+      if(res.data.status == 1){
+        this.getMyCart();
+      }
+    }).catch(error => {
+      console.log('error', error);
+    });
 
-    console.log('props', this.props.app);
+  }
+  render() {
+    let cart_products = this.props.app.cart;
+
     if (!cart_products) {
       return <Loader
         loading={true} />
@@ -74,36 +82,47 @@ class Mycart extends Component {
             cart_products.map(p => {
               if (p.parent_id != 0) return;
               let addon = cart_products.filter(o => o.parent_id == p.id);
-            //  console.log(p);
 
               return (
-                <View style={styles.editaccount}>
+                // <View style={styles.editaccount}>
+                //   <Image
+                //     style={{ width: 50, height: 50, borderRadius: 25 }}
+                //     source={{ uri: p.product_image }}
+                //   />
+                //   <View style={styles.nameview}>
+                //     <Text style={styles.nametext}>{p.product_name}</Text>
+
+                //     <View style={{flex:1}}>
+                //       {
+                //         addon.map(add => {
+                //           return (
+                //             <Text style={styles.nametext}>{add.product_name}</Text>
+                //           )
+                //         })
+                //      }
+                //     </View>
+                //     <TouchableOpacity onPress="removeItem(p)">
+                //       <Text style={{ color: 'red' }} >Remove Item</Text>
+                //     </TouchableOpacity>
+                //   </View>
+                //   {/* <View style={{ left: 50, top: 10 }}>
+                //     <NumericInput minValue={1} totalHeight={30} totalWidth={80} textColor='black' onChange={value => console.log(value)} />
+                //   </View>
+                //  <Text style={{ fontSize: 15, top: 10, color: '#000',left: 50 }}>{p.price}</Text> */}
+                //   <View style={styles.hrline} />
+                // </View>      
+                <View style={{flex:1}}>
                   <Image
                     style={{ width: 50, height: 50, borderRadius: 25 }}
                     source={{ uri: p.product_image }}
                   />
-                  <View style={styles.nameview}>
-                    <Text style={styles.nametext}>{p.product_name}</Text>
-
-                    <View style={{flex:1}}>
-                      {
-                        addon.map(add => {
-                          return (
-                            <Text style={styles.nametext}>{add.product_name}</Text>
-                          )
-                        })
-                     }
-                    </View>
-                    <TouchableOpacity onPress="removeItem(p)">
-                      <Text style={{ color: 'red' }} >Remove Item</Text>
-                    </TouchableOpacity>
-                  </View>
-                  {/* <View style={{ left: 50, top: 10 }}>
-                    <NumericInput minValue={1} totalHeight={30} totalWidth={80} textColor='black' onChange={value => console.log(value)} />
-                  </View>
-                 <Text style={{ fontSize: 15, top: 10, color: '#000',left: 50 }}>{p.price}</Text> */}
-                  <View style={styles.hrline} />
-                </View>                
+                  <Text style={styles.nametext}>{p.product_name}</Text>
+                  <TouchableOpacity onPress={()=>this.removeItem(p.id)}>
+                       <Text style={{ color: 'red' }} >Remove Item</Text>
+                     </TouchableOpacity>
+                     <NumericInput minValue={1} totalHeight={30} totalWidth={80} textColor='black' onChange={value => console.log(value)} />
+                     <Text style={{ fontSize: 15, top: 10, color: '#000',left: 50 }}>{p.price}</Text>
+                </View>          
               )
             })
           }         

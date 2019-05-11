@@ -29,6 +29,9 @@ class Menu extends Component {
   state = {
     bgColor: new Animated.Value(0)
   }
+  static navigationOptions = {
+    header: null,
+  }
 
   _setBgColor = Animated.event([{bgColor: this.state.bgColor}])
 
@@ -36,7 +39,6 @@ class Menu extends Component {
     fetch_cities().then(res => {
       if (res.data.status == 1) {
         this.props.navigation.setParams({ 'city': res.data.cities });
-        // console.log(this.cities);
       }
     }).catch(error => { console.log('error', error); });
   }
@@ -145,6 +147,7 @@ class Menu extends Component {
           <View style={styles.iconContainer}>
               <Ionicons name="heart-o" size={20} color="#000" />
               <Ionicons name="shopping-cart" size={20} color="#000" />
+              <Text>{`(${this.props.app.cart.length})`}</Text>
           </View>
        </View>
         <IndicatorViewPager

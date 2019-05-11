@@ -28,7 +28,7 @@ export default class Change_pass extends Component {
             ),
             headerRight: (
                 <View style={styles.iconContainer}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                          <Text style={{fontWeight:'200', fontSize:15, color:'#000'}}>SAVE</Text>
                     </TouchableOpacity>
                 </View>  

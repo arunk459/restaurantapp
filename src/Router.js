@@ -73,7 +73,7 @@ const AppNavigator = createStackNavigator(
     Home: { 
       screen: createBottomTabNavigator({
         Home: {
-          screen: createStackNavigator({Home:Home, Menu:Menu, Account:Account}),
+          screen: createStackNavigator({Home:Home, Menu:Menu, Account:Account,MyCart:Mycart}),
         },
         Menu: {
           screen: Menu,
@@ -102,10 +102,11 @@ const AppNavigator = createStackNavigator(
             },
           }),
           tabBarOptions: {
-            activeTintColor: 'green',
-            inactiveTintColor: 'gray',
+            activeTintColor: '#157212',
+            inactiveTintColor: '#7a7c7a',
 
           },
+          
         },
 
       ),
@@ -113,7 +114,7 @@ const AppNavigator = createStackNavigator(
   },
   {
     headerMode: 'none',
-    initialRouteName: "Starter",
+    
   },
 
 );

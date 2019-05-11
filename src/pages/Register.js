@@ -60,6 +60,12 @@ import * as actions from '../actions';
             // {cancelable: false},
             );
           }
+          else{
+            Alert.alert(
+              'Message',
+              res.data.message
+            )
+          }
         }).catch(error => { 
           console.log('error',error);
         });

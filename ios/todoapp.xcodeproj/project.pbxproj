@@ -438,6 +438,7 @@
 				2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */,
 				E1073DF2AFEE447A92A91EBF /* libRNGestureHandler-tvOS.a in Frameworks */,
 				D4EC68E48A7F4996AA2C7CAD /* libRNVectorIcons-tvOS.a in Frameworks */,
+				A92CF5B6A1344949A5CE9DDD /* libRNDeviceInfo-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

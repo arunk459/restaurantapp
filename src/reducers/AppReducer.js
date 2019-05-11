@@ -9,6 +9,7 @@ const INITIAL_STATE = { rows: [], loading: false,city: [],
     accessToken: "",
     building_id: "",
     realtedBuilding: [],
+    favProducts:[],
     cart:[],
     loading:true };
 
@@ -22,6 +23,10 @@ export default (state = INITIAL_STATE, action) => {
     return { ...state, loading: action.payload };
     case SET_KEY:
     return { ...state, [action.payload.prop]: action.payload.value };
+    case 'cart_products':
+    return { ...state,cart: action.payload}
+    case 'set_fav_products':
+    return {...state, favProducts : action.payload}
     
     case PUSH_ROW:
    

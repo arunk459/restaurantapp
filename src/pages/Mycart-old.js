@@ -54,7 +54,6 @@ class Mycart extends Component {
            formData.append('building_id', this.props.app.building_id);
         view_cart(formData).then(res => {
           
-            console.log('productDetail :', res.data.product);
             if (res.data.status == 1) {
                 this.props.setKey({ prop: 'cart_products', value: res.data.cart_products });
                 

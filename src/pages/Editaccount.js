@@ -23,14 +23,14 @@ export default class Editaccount extends Component {
             },
             headerLeft: (
                 <View style={styles.lefticon}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrowleft" size={22} color="#000" />  
                     </TouchableOpacity>           
                 </View>                    
             ),
             headerRight: (
                 <View style={styles.iconContainer}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                          <Text style={{fontWeight:'200', fontSize:15, color:'#000'}}>SAVE</Text>
                     </TouchableOpacity>
                 </View>  

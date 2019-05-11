@@ -25,6 +25,21 @@ export const setKey = ({ prop, value }) => {
   };
 };
 
+
+export const setProducts = ({ prop, value }) => {
+  return {
+    type: prop,
+    payload:  value 
+  };
+};
+
+export const setFavouriteProducts = ({ prop, value }) => {
+  return {
+    type: prop,
+    payload:  value 
+  };
+};
+
 export const hideLoader = () => {
   return {
     type: HIDE_LOADER,
