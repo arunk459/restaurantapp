@@ -25,8 +25,29 @@ export const setKey = ({ prop, value }) => {
   };
 };
 
+export const setTiming = (prop,value) => {
+  return {
+    type: prop,
+    payload: value
+  };
+}
+
+export const selectedBuildingDuringCheckout = (prop,value) => {
+  return {
+    type: prop,
+    payload: value
+  };
+}
+
 
 export const setProducts = ({ prop, value }) => {
+  return {
+    type: prop,
+    payload:  value 
+  };
+};
+
+export const setCartTotal = ({ prop, value }) => {
   return {
     type: prop,
     payload:  value 

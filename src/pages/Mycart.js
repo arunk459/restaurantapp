@@ -14,7 +14,7 @@ import {
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import Loader from "./Loader";
-import { view_cart,delete_from_cart } from '../services/Auth';
+import { view_cart,delete_from_cart,update_cart } from '../services/Auth';
 
 class Mycart extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -53,6 +53,7 @@ class Mycart extends Component {
       if (res.data.status == 1) {
         this.props.setProducts({ prop: 'cart_products', value: [] });
         this.props.setProducts({ prop: 'cart_products', value: res.data.cart_products });
+        this.props.setCartTotal({prop: 'total_cart_value',value:res.data.total})
       }
     }).catch(error => {
       console.log('error', error);
@@ -68,7 +69,21 @@ class Mycart extends Component {
     });
 
   }
+  updateQuantityItem = (product_id,quantity)=>{
+    var formData = new FormData();
+    formData.append('device_id', this.props.app.mac);
+    formData.append('product_id', product_id);
+    formData.append('quantity',quantity)
+    update_cart(formData).then((res)=>{
+      if(res.data.status == 1){
+          this.getMyCart();
+      }
+    }).catch(err =>{
+      console.log(err);
+    })
+  }
   render() {
+    console.log("this.props",this.props);
     let cart_products = this.props.app.cart;
 
     if (!cart_products) {
@@ -120,7 +135,14 @@ class Mycart extends Component {
                   <TouchableOpacity onPress={()=>this.removeItem(p.id)}>
                        <Text style={{ color: 'red' }} >Remove Item</Text>
                      </TouchableOpacity>
-                     <NumericInput minValue={1} totalHeight={30} totalWidth={80} textColor='black' onChange={value => console.log(value)} />
+                     <NumericInput 
+                              initValue={parseInt(p.quantity)} 
+                              step={1} 
+                              value={parseInt(p.quantity)} 
+                              totalHeight={30} 
+                              totalWidth={80} 
+                              textColor='black' 
+                              onChange={quantity => this.updateQuantityItem(p.product_id,quantity)} />
                      <Text style={{ fontSize: 15, top: 10, color: '#000',left: 50 }}>{p.price}</Text>
                 </View>          
               )
@@ -150,8 +172,8 @@ class Mycart extends Component {
 
         </ScrollView>
         <View style={styles.footer}>
-          <Text style={{ right: 200, top: 15, fontSize: 15 }}>$16.46</Text>
-          <TouchableOpacity style={styles.cartbutton}>
+          <Text style={{ right: 200, top: 15, fontSize: 15 }}>{`Rs. ${this.props.app.total_cart_value}`}</Text>
+          <TouchableOpacity style={styles.cartbutton} onPress={()=>this.props.navigation.navigate('Timing')}>
             <Text style={styles.carttext}>PROCEED TO PAY</Text>
           </TouchableOpacity>
         </View>

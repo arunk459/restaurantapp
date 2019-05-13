@@ -77,6 +77,7 @@ class Starter extends Component {
     });
   }
   googleLogin = (userInfo) => {
+    console.log("userinfo google login 1",userInfo);
     var formData = new FormData();
     formData.append('email', userInfo.user.email);
     formData.append('idToken', userInfo.idToken);
@@ -87,7 +88,7 @@ class Starter extends Component {
     formData.append('familyName', userInfo.user.familyName);
 
     google_login(formData).then(res => {
-      console.log('response :', res);
+      console.log('response : on google login', res);
       if (res.data.status == 1) {
         this.props.navigation.navigate('Home', {
           'city_id': this.state.city_id,
@@ -96,17 +97,19 @@ class Starter extends Component {
         });
       }
     }).catch(error => {
+      console.log('response : on google login', error);
       console.log('error', error);
     });
   }
   _signIn = async () => {
+    console.log("on sign in with google 0");
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log('userInfo', userInfo);
-      this.setState({ userInfo });
       this.googleLogin(userInfo);
     } catch (error) {
+      console.log("error on login with google",error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
         Alert.alert('user cancelled the login flow');
@@ -121,6 +124,16 @@ class Starter extends Component {
       }
     }
   };
+
+  getStartedPressed = ()=>{
+    console.log("this.state.city_id.",this.state.city_id,this.state.building_id);
+    if(this.state.city_id.length <=0 || this.state.building_id.length <=0 ){
+      Alert.alert("Message","Please Select City & Building");
+    }
+    else{
+      this.props.navigation.navigate('Register', { city_id: this.state.city_id, building_id: this.state.building_id })
+    }
+  }
 
 
 
@@ -145,6 +158,7 @@ class Starter extends Component {
                 onValueChange={(itemValue, itemIndex) => {
 
                   this.props.setKey({ prop: 'city_id', value: itemValue });
+                  this.setState({city_id:itemValue});
                   if (!itemValue) return;
                   this.getBuilding(itemValue);
                 }
@@ -158,6 +172,7 @@ class Starter extends Component {
                 onValueChange={(itemValue, itemIndex) => {
                   if (!itemValue) return;
                   this.props.setKey({ prop: 'building_id', value: itemValue });
+                  this.setState({building_id:itemValue});
                   let obj = this.props.app.realtedBuilding.find(o => o.id === itemValue);
                   if (obj.menu_id) {
                     this.props.setKey({ prop: 'menu_id', value: obj.menu_id });
@@ -169,7 +184,7 @@ class Starter extends Component {
                 {makeDropDown(this.props.app.realtedBuilding)}
               </Picker>
               <TouchableOpacity style={styles.buttoncontainer}>
-                <Text style={styles.buttontext} onPress={() => this.props.navigation.navigate('Register', { city_id: this.state.city_id, building_id: this.state.building_id })}>GET STARTED</Text>
+                <Text style={styles.buttontext} onPress={() => this.getStartedPressed()}>GET STARTED</Text>
               </TouchableOpacity>
               <View style={styles.viewtext}>
                 <Text style={styles.textdata}>Already Registered ? </Text>

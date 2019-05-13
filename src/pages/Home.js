@@ -51,8 +51,6 @@ class Home extends Component {
     formData.append('device_id', this.props.auth.user.user.email);
     formData.append('building_id', this.props.app.building_id);
     view_cart(formData).then(res => {
-
-      
       if (res.data.status == 1) {
         this.props.setProducts({ prop: 'cart_products', value: [] });        
         this.props.setProducts({ prop: 'cart_products', value: res.data.cart_products });
@@ -225,6 +223,7 @@ class Home extends Component {
 
 
   render() {
+    console.log("this.props",this.props); 
     // const items = [];
     // for (let x = 1; x <= 6; x++) {
     //   items.push({

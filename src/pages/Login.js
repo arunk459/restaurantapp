@@ -36,17 +36,30 @@ class Login extends Component {
       const _this =this;
       const {username} = this.state;
       const {password} = this.state;
-      var formData = new FormData();
-      formData.append('email', username);
-      formData.append('password', password);
-      fetch_login(formData).then(res => {
+
+      if(username.length <= 0 || password.length <= 0 ){
+        Alert.alert("Message","Please Enter UserName & Password");
+      }
+      else{
+
+        var formData = new FormData();
+        formData.append('email', username);
+        formData.append('password', password);
+        console.log("formData",formData);
+        fetch_login(formData).then(res => {
+          console.log("REs on login",res);
         if(res.data.status == "1"){
           this.props.handleLoginUser(res.data);
         this.props.navigation.navigate('Home')
         }
+        if(res.data.status == "0"){
+          Alert.alert("Message",res.data.message)
+        }
       }).catch(error => {
         console.log('error',error);
       });
+      }
+      
 }
     render() {
       return (

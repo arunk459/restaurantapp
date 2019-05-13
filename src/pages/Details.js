@@ -78,8 +78,9 @@ class Details extends Component {
             console.log('productDetail :', res.data.product);
             if (res.data.status == 1) {
                 this.props.setKey({ prop: 'product', value: res.data.product });
-
-
+                if(res.data.product.rating != null){
+                    this.setState({rating:parseFloat(res.data.product.rating)})
+                }
             }
         }).catch(error => {
             console.log('error', error);
@@ -152,6 +153,7 @@ class Details extends Component {
         formData.append('building_id', this.props.app.building_id);
         formData.append('price', this.props.app.product.prices[0].offered_price);
         formData.append('mac', this.props.app.mac);
+        console.log("Form data in addto cart",formData);
         let addonIds = [];
         for (let item in this.state.checked) {
             if (this.state.checked[item]) {
@@ -176,12 +178,15 @@ class Details extends Component {
     }
     submitReview = () => {
         var formData = new FormData();
+        formData.append('name',this.props.auth.user.user.name);
+        formData.append('email',this.props.auth.user.user.email);
+        formData.append('product_id',this.props.app.selectedProduct.id); 
         formData.append('review', this.state.review);
         formData.append('rating', this.state.rating);
         submit_product_review(formData).then(res => {
-            console.log('productDetail :', res);
             if (res.data.status == 1) {
-                Alert.alert(res.data.message);
+                Alert.alert("Message",res.data.message);
+                this.getProductDetails(this.props.app.selectedProduct.id);
             }
         }).catch(error => {
             console.log('error', error);
@@ -293,6 +298,7 @@ class Details extends Component {
                         <Rating
                             type="star"
                             ratingCount={5}
+                            step={0.1}
                             fractions={0}
                             startingValue={this.state.rating}
                             imageSize={25}
@@ -327,6 +333,7 @@ class Details extends Component {
                                 <Text style={styles.reviewtext3}>{`${d.name}(${d.email})`} </Text>
                                 <Text style={styles.reviewrating}>{d.rating}</Text>
                                 <Ionicons name="star" size={12} color="#FF4500" />
+                                <Text>{d.review}</Text>
                                 <View style={styles.hrline} />
 
                             </View>)

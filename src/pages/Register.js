@@ -40,35 +40,45 @@ import * as actions from '../actions';
         formData.append('city_id',this.props.app.city_id);
         formData.append('building_id',this.props.app.building_id);
         console.log(formData);
-
-        addUser(formData).then(res => {
-          console.log('response :',res);
-          if(res.data.status == 1){
-          // this.props.navigation.navigate('Login')
-          Alert.alert(
-            'Message',
-            'You have registered successfully. Please login to continue',
-            [ 
-              {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
-              // {
-              //   text: 'OK',
-              //   onPress: () => this.props.navigation.navigate('Login'),
-              //   style: 'cancel',
-              // }//,
-              // {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
-            ]
-            // {cancelable: false},
-            );
-          }
-          else{
+        if(this.state.email.length <=0  || this.state.password.length <=0 || this.state.mobile.length <=0 || this.state.name.length <=0 ){
+          Alert.alert("Message","Please Enter All Fields");
+        }
+        else if(this.state.mobile.length < 10 ){
+          Alert.alert("Message","Please Enter Valid Mobile Number");
+        }
+        else if(!this.state.email.endsWith('.com')){
+          Alert.alert("Message","Please Enter Valid Email Address");
+        }
+        else{
+          addUser(formData).then(res => {
+            console.log('response :',res);
+            if(res.data.status == 1){
+            // this.props.navigation.navigate('Login')
             Alert.alert(
               'Message',
-              res.data.message
-            )
-          }
-        }).catch(error => { 
-          console.log('error',error);
-        });
+              'You have registered successfully. Please login to continue',
+              [ 
+                {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
+                // {
+                //   text: 'OK',
+                //   onPress: () => this.props.navigation.navigate('Login'),
+                //   style: 'cancel',
+                // }//,
+                // {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
+              ]
+              // {cancelable: false},
+              );
+            }
+            else{
+              Alert.alert(
+                'Message',
+                res.data.message
+              )
+            }
+          }).catch(error => { 
+            console.log('error',error);
+          });
+        }
   }
     render() {
       // const { navigation } = this.props;

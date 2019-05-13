@@ -25,7 +25,8 @@ import Favourities from './pages/Favourites';
 import Order from './pages/My_order';
 import Order_details from './pages/Order_details';
 import Offers from './pages/Offers';
-import Referral from './pages/Referral'
+import Referral from './pages/Referral';
+import Timing from './pages/Timing';
 // import Splash from './pages/Splash';
 
 const AppNavigator = createStackNavigator(
@@ -37,7 +38,7 @@ const AppNavigator = createStackNavigator(
       screen: Login,
     },
     Details: {
-      screen: createStackNavigator({Details:Details,MyCart:Mycart})
+      screen: createStackNavigator({Details:Details,MyCart:Mycart,Timing:Timing})
      // screen:Details,
     },
      MyCart: {
@@ -70,10 +71,13 @@ const AppNavigator = createStackNavigator(
     Referral:{
       screen: Referral,
     },
+    Timing:{
+      screen: Timing,
+    },
     Home: { 
       screen: createBottomTabNavigator({
         Home: {
-          screen: createStackNavigator({Home:Home, Menu:Menu, Account:Account,MyCart:Mycart}),
+          screen: createStackNavigator({Home:Home, Menu:Menu, Account:Account,MyCart:Mycart,Timing:Timing}),
         },
         Menu: {
           screen: Menu,

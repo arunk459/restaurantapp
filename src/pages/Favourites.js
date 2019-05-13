@@ -21,6 +21,7 @@ class Favourites extends Component {
 
   componentDidMount(){
     fetch_wishlist(this.props.auth.user.user.id).then(res =>{
+          console.log("res in fav",res);
           this.props.setFavouriteProducts({prop : 'set_fav_products',value : res.data.products});
     })
   }
@@ -100,7 +101,6 @@ class Favourites extends Component {
   
     render() {
         const items = this.props.app.favProducts;
-       
         return (
            <ScrollView style={styles.container}>
                  <View style={styles.flex}>

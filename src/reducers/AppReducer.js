@@ -11,10 +11,13 @@ const INITIAL_STATE = { rows: [], loading: false,city: [],
     realtedBuilding: [],
     favProducts:[],
     cart:[],
-    loading:true };
+    loading:true,
+    selectedTiming : 0,
+    selectedBuildingDuringCheckout:"",
+    total_cart_value:0
+  };
 
 export default (state = INITIAL_STATE, action) => {
- 
 
   switch (action.type) {
     case SHOW_LOADER:
@@ -27,6 +30,15 @@ export default (state = INITIAL_STATE, action) => {
     return { ...state,cart: action.payload}
     case 'set_fav_products':
     return {...state, favProducts : action.payload}
+    case 'selectedTiming':
+    return {...state, selectedTiming : action.payload}
+    case 'selectedBuildingDuringCheckout':
+    return {...state, selectedBuildingDuringCheckout : action.payload}
+    case 'total_cart_value':
+    return {...state, total_cart_value : action.payload}
+
+
+    
     
     case PUSH_ROW:
    
