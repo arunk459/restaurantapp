@@ -55,13 +55,11 @@ class Favourites extends Component {
                 </View>
                 <View>
                 <Text style={styles.name}>{item ? item.product_name : ""}</Text>
-                <View style={{flex:1,flexDirection:'row'}}>
                         <Ionicons name="star" size={12} color="#FF4500"/>
-                        <Text>{item ? item.rate : ""}</Text> 
+                        <Text>{item ? item.product_price : ""}</Text> 
                         <TouchableOpacity style={styles.buttoncontainer} onPress={this.login}>
                             <Text style={styles.buttontext}>Add</Text>
                         </TouchableOpacity>
-                </View>
                 </View>
         </View>
           );

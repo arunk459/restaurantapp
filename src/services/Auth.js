@@ -11,6 +11,17 @@ export const fetch_login = (formData) => {
     return axios.post(serviceurl + '/login', formData);
 
 }
+export const applyCoupon = (formData)=>{
+    return axios.post(serviceurl + '/check_coupon',formData);
+}
+
+export const get_bookings = (formData)=>{
+    return axios.post(serviceurl + '/booking',formData);
+}
+
+export const fetch_sales_tax_rate = (buildingId)=>{
+    return axios.post(serviceurl + '/fetch_sales_tax_rate/'+buildingId);
+}
 
 export const delete_from_cart = (itemId) => {
     return axios.post(serviceurl + '/delete_from_cart'+'/'+itemId);

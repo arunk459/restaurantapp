@@ -14,7 +14,8 @@ const INITIAL_STATE = { rows: [], loading: false,city: [],
     loading:true,
     selectedTiming : 0,
     selectedBuildingDuringCheckout:"",
-    total_cart_value:0
+    total_cart_value:0,
+    tax_rate:0
   };
 
 export default (state = INITIAL_STATE, action) => {
@@ -36,10 +37,9 @@ export default (state = INITIAL_STATE, action) => {
     return {...state, selectedBuildingDuringCheckout : action.payload}
     case 'total_cart_value':
     return {...state, total_cart_value : action.payload}
-
-
-    
-    
+    case 'tax_rate' : 
+    return {...state, tax_rate : action.payload}
+        
     case PUSH_ROW:
    
     return { ...state,

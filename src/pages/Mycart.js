@@ -53,7 +53,7 @@ class Mycart extends Component {
       if (res.data.status == 1) {
         this.props.setProducts({ prop: 'cart_products', value: [] });
         this.props.setProducts({ prop: 'cart_products', value: res.data.cart_products });
-        this.props.setCartTotal({prop: 'total_cart_value',value:res.data.total})
+        this.props.setCartTotal({prop: 'total_cart_value',value:parseInt(res.data.total)})
       }
     }).catch(error => {
       console.log('error', error);
@@ -141,6 +141,7 @@ class Mycart extends Component {
                               value={parseInt(p.quantity)} 
                               totalHeight={30} 
                               totalWidth={80} 
+                              minValue={1}
                               textColor='black' 
                               onChange={quantity => this.updateQuantityItem(p.product_id,quantity)} />
                      <Text style={{ fontSize: 15, top: 10, color: '#000',left: 50 }}>{p.price}</Text>

@@ -227,7 +227,7 @@ class Details extends Component {
                     <Text  style={{fontSize:15,fontWeight:'bold',width:80,color:'#333',paddingLeft:10}}>Details</Text>
                 </View>
                 <View style={{flex:0.4,justifyContent:'flex-end',alignItems:'center',flexDirection:'row'}}>
-                <TouchableOpacity onPress={()=>{this.addToFavourite()}}>
+                <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Favourities')}}>
                     <Fonticons name="heart-o" size={25} color="#000" style={{paddingRight:20}}/>
                  </TouchableOpacity>
                  <TouchableOpacity onPress={() =>this.props.navigation.navigate('MyCart')} style={{paddingRight:20,flexDirection:'row',alignItems:'center'}}>
@@ -343,7 +343,7 @@ class Details extends Component {
                 </ScrollView>
 
                 <View style={styles.footer}>
-                    <TouchableOpacity style={styles.cartbutton}>
+                    <TouchableOpacity style={styles.cartbutton} onPress={()=>{this.addToFavourite()}}>
                         <Text style={styles.carttext}>ADD TO FAVOURITE</Text>
                     </TouchableOpacity>
                 </View>
