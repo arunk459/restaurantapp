@@ -39,6 +39,13 @@ export const setTaxRate = (prop,value) => {
   };
 }
 
+export const setDiscountRate = (prop,value) => {
+  return {
+    type: prop,
+    payload: value
+  };
+}
+
 export const selectedBuildingDuringCheckout = (prop,value) => {
   return {
     type: prop,

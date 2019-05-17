@@ -43,7 +43,7 @@ class Timing extends Component {
         formData.append('office_name', this.state.office_name);
         formData.append('office_no', this.state.office_no);
         formData.append('floor', this.state.floor);
-        formData.append('amount', parseFloat(this.props.app.total_cart_value+this.props.app.tax_rate).toFixed(2));
+        formData.append('amount', parseFloat(this.props.app.total_cart_value+this.props.app.tax_rate-this.props.app.discount_rate).toFixed(2));
         formData.append('user_id', this.props.auth.user.user.id);
 
         get_bookings(formData).then((res)=>{
@@ -85,6 +85,7 @@ class Timing extends Component {
             applyCoupon(formData).then((res)=>{
                 if(res.data.status == 1){
                     this.setState({couponApplied:true});
+                    this.props.setDiscountRate(prop = "discount_rate",value = Math.round( parseFloat(res.data.discount_rate) * 1e2 ) / 1e2)
                     Alert.alert("Message",res.data.message);
                 }
                 if(res.data.status == 0){
@@ -227,10 +228,13 @@ class Timing extends Component {
                         <Text style={[styles.reviewtext3,{width:'60%',alignItems:'center'}]}>Tax</Text>
                         <Text style={[styles.reviewtext3,{width:'20%',alignItems:'center'}]}>{`${this.props.app.tax_rate}`}</Text>
                     </View>
-                   
+                    <View style={{height:35,alignItems:'center',flexDirection:'row'}}>
+                        <Text style={[styles.reviewtext3,{width:'60%',alignItems:'center'}]}>Discount</Text>
+                        <Text style={[styles.reviewtext3,{width:'20%',alignItems:'center'}]}>{`${this.props.app.discount_rate}`}</Text>
+                    </View>
                     <View style={{height:50,alignItems:'center',flexDirection:'row'}}>
                         <Text style={[styles.reviewtext3,{width:'60%',fontWeight:'bold'}]}>Total</Text>
-                        <Text style={[styles.reviewtext3,{width:'20%',fontWeight:'bold'}]}>{parseFloat(this.props.app.total_cart_value+this.props.app.tax_rate).toFixed(2)}</Text>
+                        <Text style={[styles.reviewtext3,{width:'20%',fontWeight:'bold'}]}>{parseFloat(this.props.app.total_cart_value+this.props.app.tax_rate-this.props.app.discount_rate).toFixed(2)}</Text>
                     </View>
                         
                 </View>
