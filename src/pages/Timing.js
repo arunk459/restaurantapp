@@ -43,7 +43,7 @@ class Timing extends Component {
         formData.append('office_name', this.state.office_name);
         formData.append('office_no', this.state.office_no);
         formData.append('floor', this.state.floor);
-        formData.append('amount', this.props.app.total_cart_value+this.props.app.tax_rate);
+        formData.append('amount', parseFloat(this.props.app.total_cart_value+this.props.app.tax_rate).toFixed(2));
         formData.append('user_id', this.props.auth.user.user.id);
 
         get_bookings(formData).then((res)=>{
@@ -98,8 +98,8 @@ class Timing extends Component {
         }
         fetchTaxRate = (buildingId) =>{
             fetch_sales_tax_rate(buildingId).then((res)=>{
-                if(res.data.status == 1){prop,value
-                    this.props.setTaxRate(prop = 'tax_rate',value=parseInt(res.data.tax_rate))
+                if(res.data.status == 1){
+                    this.props.setTaxRate(prop = 'tax_rate',value= Math.round( parseFloat(res.data.tax_rate) * 1e2 ) / 1e2);
                 }
                 console.log("res on tax rate",res);
             })
@@ -230,7 +230,7 @@ class Timing extends Component {
                    
                     <View style={{height:50,alignItems:'center',flexDirection:'row'}}>
                         <Text style={[styles.reviewtext3,{width:'60%',fontWeight:'bold'}]}>Total</Text>
-                        <Text style={[styles.reviewtext3,{width:'20%',fontWeight:'bold'}]}>{`Rs. ${this.props.app.total_cart_value+this.props.app.tax_rate}`}</Text>
+                        <Text style={[styles.reviewtext3,{width:'20%',fontWeight:'bold'}]}>{parseFloat(this.props.app.total_cart_value+this.props.app.tax_rate).toFixed(2)}</Text>
                     </View>
                         
                 </View>

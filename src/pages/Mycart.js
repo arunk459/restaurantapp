@@ -53,7 +53,7 @@ class Mycart extends Component {
       if (res.data.status == 1) {
         this.props.setProducts({ prop: 'cart_products', value: [] });
         this.props.setProducts({ prop: 'cart_products', value: res.data.cart_products });
-        this.props.setCartTotal({prop: 'total_cart_value',value:parseInt(res.data.total)})
+        this.props.setCartTotal({prop: 'total_cart_value',value : ( Math.round(parseFloat(res.data.total)* 1e2) )/1e2})
       }
     }).catch(error => {
       console.log('error', error);
