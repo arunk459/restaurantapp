@@ -39,6 +39,7 @@ class Login extends Component {
 
       if(username.length <= 0 || password.length <= 0 ){
         Alert.alert("Message","Please Enter UserName & Password");
+        Alert.alert("Message","Please Enter UserName & Password");
       }
       else{
 
