@@ -43,7 +43,7 @@ class Timing extends Component {
         formData.append('office_name', this.state.office_name);
         formData.append('office_no', this.state.office_no);
         formData.append('floor', this.state.floor);
-        formData.append('amount', this.props.app.total_cart_value);
+        formData.append('amount', this.props.app.total_cart_value+this.props.app.tax_rate);
         formData.append('user_id', this.props.auth.user.user.id);
 
         get_bookings(formData).then((res)=>{
