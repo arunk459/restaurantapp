@@ -6,10 +6,47 @@ import {
     View,
     Image,
     TouchableOpacity,
-    TextInput
+    TextInput,
+    Alert
     } from 'react-native'; 
+import { connect } from 'react-redux';
+import * as actions from '../actions';
+
+
+
+import {update_password} from '../services/Auth';
+
+
     
-export default class Change_pass extends Component {
+class Change_pass extends Component {
+    constructor(props){
+        super(props);
+        this.state={
+            newPassword:"",
+            oldPassword:""
+        }
+    }
+
+    componentDidMount(){
+        this.props.navigation.setParams({ updatePassword: this.updatePassword });
+    }
+    updatePassword = ()=>{
+        var formData = new FormData();  
+        formData.append('user_id', this.props.auth.user.user.id);
+        formData.append('password', this.state.oldPassword);
+        formData.append('new_password', this.state.newPassword);
+        update_password(formData).then((res)=>{
+            if(res.data.status == 1){
+                this.props.navigation.goBack();
+                Alert.alert("Message",res.data.message);
+            }
+            if(res.data.status == 0){
+                Alert.alert("Message",res.data.message);
+            }
+        }).catch(err=>{
+            console.log(err)
+        })
+    }
     static navigationOptions  = ({ navigation }) => {
         return {
             headerTitle: 'Change Password', 
@@ -20,15 +57,14 @@ export default class Change_pass extends Component {
             },
             headerLeft: (
                 <View style={styles.lefticon}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrowleft" size={22} color="#000" />  
                     </TouchableOpacity>
-                
                 </View>                    
             ),
             headerRight: (
                 <View style={styles.iconContainer}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.state.params.updatePassword()}>
                          <Text style={{fontWeight:'200', fontSize:15, color:'#000'}}>SAVE</Text>
                     </TouchableOpacity>
                 </View>  
@@ -43,13 +79,13 @@ export default class Change_pass extends Component {
                             placeholder="Old Password"
                             returnKeyType="Next"
                             secureTextEntry
-                            onChangeText={ password => this.setState({ password }) }
+                            onChangeText={ oldPassword => this.setState({ oldPassword }) }
                           />
                     <TextInput style={styles.input}
                             placeholder="New Password"
                             returnKeyType="go"
                             secureTextEntry
-                            onChangeText={ password => this.setState({ password }) }
+                            onChangeText={ newPassword => this.setState({ newPassword }) }
                           />
                  </View>
                  
@@ -58,6 +94,10 @@ export default class Change_pass extends Component {
 
     }
 }
+
+const mapStateToProps = state => { return state; };
+
+export default connect(mapStateToProps,actions)(Change_pass);
 const styles = StyleSheet.create({
     container: {
       flex: 1,

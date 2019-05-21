@@ -15,6 +15,17 @@ export const applyCoupon = (formData)=>{
     return axios.post(serviceurl + '/check_coupon',formData);
 }
 
+export const update_password = (formData)=>{
+    return axios.post(serviceurl + '/update_password',formData);
+}
+
+export const forgot_password = (formData)=>{
+    return axios.post(serviceurl + '/forget_password',formData);
+}
+export const update_profile = (formData)=>{
+    return axios.post(serviceurl + '/update_profile',formData);
+}
+
 export const get_bookings = (formData)=>{
     return axios.post(serviceurl + '/booking',formData);
 }
@@ -32,7 +43,6 @@ export const add_to_wishlist = (userId,itemId) => {
 }
 
 export const fetch_wishlist = (userId)=>{
-    console.log("fetch_wishlist url",serviceurl + '/view_wish_list'+'/'+userId)
     return axios.get(serviceurl + '/view_wish_list'+'/'+userId);
 }
 
