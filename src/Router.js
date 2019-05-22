@@ -27,6 +27,7 @@ import Order_details from './pages/Order_details';
 import Offers from './pages/Offers';
 import Referral from './pages/Referral';
 import Timing from './pages/Timing';
+import Checkout from './pages/Checkout';
 // import Splash from './pages/Splash';
 
 const AppNavigator = createStackNavigator(
@@ -71,8 +72,11 @@ const AppNavigator = createStackNavigator(
     Referral:{
       screen: Referral,
     },
+    Checkout:{
+      screen:Checkout,
+    },
     Timing:{
-      screen: Timing,
+      screen: createStackNavigator({Timing:Timing,Checkout:Checkout}),
     },
     Home: { 
       screen: createBottomTabNavigator({

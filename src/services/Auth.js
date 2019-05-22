@@ -15,6 +15,25 @@ export const applyCoupon = (formData)=>{
     return axios.post(serviceurl + '/check_coupon',formData);
 }
 
+export const make_payment = (formData)=>{
+    return axios.post( 'https://ezzybitetest.azurewebsites.net/payment/mobile.php',formData);
+}
+
+export const update_password = (formData)=>{
+    return axios.post(serviceurl + '/update_password',formData);
+}
+
+export const my_bookings = (id)=>{
+    return axios.post(serviceurl + '/my_bookings/'+id);
+}
+
+export const forgot_password = (formData)=>{
+    return axios.post(serviceurl + '/forget_password',formData);
+}
+export const update_profile = (formData)=>{
+    return axios.post(serviceurl + '/update_profile',formData);
+}
+
 export const get_bookings = (formData)=>{
     return axios.post(serviceurl + '/booking',formData);
 }
@@ -32,7 +51,6 @@ export const add_to_wishlist = (userId,itemId) => {
 }
 
 export const fetch_wishlist = (userId)=>{
-    console.log("fetch_wishlist url",serviceurl + '/view_wish_list'+'/'+userId)
     return axios.get(serviceurl + '/view_wish_list'+'/'+userId);
 }
 

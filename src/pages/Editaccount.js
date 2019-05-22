@@ -9,10 +9,61 @@ import {
     TouchableOpacity,
     TextInput,
     Picker,
+    Alert,
     ScrollView
     } from 'react-native'; 
+
+import { connect } from 'react-redux';
+import * as actions from '../actions';
+import {update_profile} from '../services/Auth';
+
     
-export default class Editaccount extends Component {
+class Editaccount extends Component {
+    constructor(props){
+        super(props);
+        this.state ={ 
+            name: "",
+            mobile:"",
+            gender:"",
+            dob:"",
+            office_name:"",
+            building_id:"",
+            office_no:"",
+            floor:"",
+            city_id:"",
+            email:""
+        }
+    }
+
+    componentDidMount(){
+        this.props.navigation.setParams({ updateProfile: this.updateProfile });
+    }
+    updateProfile = ()=>{
+        var formData = new FormData();  
+        formData.append('id', this.props.auth.user.user.id);
+        formData.append('name', this.state.name);
+        formData.append('mobile', this.state.mobile);
+        formData.append('gender', this.state.gender);
+        formData.append('dob', this.state.dob);
+        formData.append('building_id', this.state.building_id);
+        formData.append('office_name', this.state.office_name);
+        formData.append('office_no', this.state.office_no);
+        formData.append('floor', this.state.floor);
+        formData.append('city_id', this.state.city_id);
+
+        update_profile(formData).then(res =>{
+            if(res.data.status == 1){
+                this.props.navigation.goBack();
+                Alert.alert("Message",res.data.message);
+            }
+            if(res.data.status == 0){
+                Alert.alert("Message",res.data.message);
+            }
+        }).catch(err =>{
+            console.log(err);
+        });
+    }
+
     static navigationOptions  = ({ navigation }) => {
         return {
             headerTitle: 'Edit Account',
@@ -30,17 +81,13 @@ export default class Editaccount extends Component {
             ),
             headerRight: (
                 <View style={styles.iconContainer}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.state.params.updateProfile()}>
                          <Text style={{fontWeight:'200', fontSize:15, color:'#000'}}>SAVE</Text>
                     </TouchableOpacity>
                 </View>  
             ),
             };       
         };
-        constructor(props){
-            super(props)
-            this.state = {date:""}
-          }
     render() {
         return (
            <ScrollView style={styles.container}>
@@ -60,7 +107,7 @@ export default class Editaccount extends Component {
                           />
                     </View>
                 </View>
-                <View style={styles.fieldview}>
+                {/* <View style={styles.fieldview}>
                 <Image 
                     style={{width:25,height:25}}
                     source={require('../images/imgs/email-address.png')}
@@ -76,7 +123,7 @@ export default class Editaccount extends Component {
                             onChangeText={ email => this.setState({ email }) }
                           />
                     </View>
-                </View>
+                </View> */}
                 <View style={styles.fieldview}>
                 <Image 
                     style={{width:25,height:25}}
@@ -97,7 +144,7 @@ export default class Editaccount extends Component {
                        
                           <DatePicker
                                 style={{width: 300}}
-                                date={this.state.date}
+                                date={this.state.dob}
                                 mode="date"
                                 placeholder="select date"
                                 format="YYYY-MM-DD"
@@ -121,20 +168,35 @@ export default class Editaccount extends Component {
                             />
                 </View>
                 <View style={styles.fieldview}>
-                    <Picker style={{width: '100%'}} name="gender"> 
+                    <Picker style={{width: '100%'}} name="gender"
+                     selectedValue={this.state.gender}
+                     onValueChange={(itemValue, itemIndex) => { 
+                       this.setState({ gender: itemValue });
+                     }}
+                    > 
                         <Picker.Item label="Choose Gender" value=""  />
                         <Picker.Item label="Male" value="1" />
                         <Picker.Item label="Female" value="0" />
                     </Picker>
                 </View>
                 <View style={styles.fieldview}>
-                     <Picker style={{width: '100%'}} name="city_id"> 
+                     <Picker style={{width: '100%'}} name="city_id"
+                     selectedValue={this.state.city_id}
+                     onValueChange={(itemValue, itemIndex) => { 
+                       this.setState({ city_id: itemValue });
+                     }}
+                     > 
                         <Picker.Item label="Choose City" value="" />
                         <Picker.Item label="Tyson" value="tyson" />
                     </Picker>
                 </View>
                 <View style={styles.fieldview}>
-                    <Picker style={{width: '100%'}} name="building_id"> 
+                    <Picker style={{width: '100%'}} name="building_id"
+                    selectedValue={this.state.building_id}
+                    onValueChange={(itemValue, itemIndex) => { 
+                      this.setState({ building_id: itemValue });
+                    }}
+                    > 
                         <Picker.Item label="Choose Building" value=""  />
                         <Picker.Item label="Tyson Tower" value="tysontower" />
                     </Picker>
@@ -171,6 +233,10 @@ export default class Editaccount extends Component {
 
     }
 }
+
+const mapStateToProps = state => { return state; };
+
+export default connect(mapStateToProps,actions)(Editaccount);
 const styles = StyleSheet.create({
     lefticon:{
         padding : 10

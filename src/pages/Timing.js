@@ -50,7 +50,7 @@ class Timing extends Component {
             console.log("response on save",res);
             if(res.data.status == 1){
                 Alert.alert("Message",res.data.message+" Your Booking ID"+res.data.booking_id);
-                this.props.navigation.navigate('Home');
+                this.props.navigation.navigate('Checkout',{id : res.data.booking_id,price: parseFloat(this.props.app.total_cart_value+this.props.app.tax_rate-this.props.app.discount_rate).toFixed(2) });
             }
             else{
                 Alert.alert("Message","Something went wrong")
