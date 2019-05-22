@@ -32,7 +32,7 @@ class Checkout extends React.Component{
         formData.append('exp_year', this.state.exp_year);
         make_payment(formData).then((res)=>{
             if(res.data.status == 1){
-                this.props.navigation.navigate('Home');
+                this.props.navigation.navigate('Order');
                 Alert.alert("Message",res.data.message);
             }
             else{

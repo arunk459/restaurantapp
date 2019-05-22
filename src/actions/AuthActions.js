@@ -32,6 +32,13 @@ export const setTiming = (prop,value) => {
   };
 }
 
+export const setBookings = (prop,value) => {
+  return {
+    type: prop,
+    payload: value
+  };
+}
+
 export const setTaxRate = (prop,value) => {
   return {
     type: prop,

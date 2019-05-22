@@ -23,6 +23,10 @@ export const update_password = (formData)=>{
     return axios.post(serviceurl + '/update_password',formData);
 }
 
+export const my_bookings = (id)=>{
+    return axios.post(serviceurl + '/my_bookings/'+id);
+}
+
 export const forgot_password = (formData)=>{
     return axios.post(serviceurl + '/forget_password',formData);
 }

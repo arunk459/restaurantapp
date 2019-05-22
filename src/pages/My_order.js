@@ -4,11 +4,25 @@ import {
     StyleSheet, 
     Text,
     View,
+    ScrollView,
     Image,
     TouchableOpacity,
+    Dimensions,
+    FlatList
     } from 'react-native'; 
-    
-export default class My_order extends Component {
+
+import { connect } from 'react-redux';
+import * as actions from '../actions';
+import {makeDropDown ,applyCoupon, get_bookings, my_bookings} from '../services/Auth';
+const {height} = Dimensions.get("window");  
+
+class My_order extends Component {
+    componentDidMount(){
+        my_bookings(this.props.auth.user.user.id).then((res)=>{
+            console.log(res);
+            this.props.setBookings('my_bookings',res.data.bookings)
+        })
+    }
     static navigationOptions  = ({ navigation }) => {
         return {
             headerTitle: 'My Orders',
@@ -19,7 +33,7 @@ export default class My_order extends Component {
             },
             headerLeft: (
                 <View style={styles.lefticon}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrowleft" size={22} color="#000" />  
                     </TouchableOpacity>
                 
@@ -29,42 +43,62 @@ export default class My_order extends Component {
         };
     render() {
         return (
-           <View style={styles.container}>
-                <View style={styles.reviewcontainer}>
-                    <View style={{flex:1,flexDirection:'row'}}>
-                    <Text style={styles.reviewtext3}>Orders Id: EZZPPFGT545</Text>
-                    <Text style={styles.reviewrating}> $16.56</Text>
+           <ScrollView style={styles.container}>
+            <FlatList
+                data={this.props.app.my_bookings}
+                renderItem={({ item, index }) =>
+                <View style={[styles.reviewcontainer,{flex: 1}]}>
+                    <View style={{flex:1,margin:10}}> 
+                            <Text style={{fontSize:14,color:'#000'}}>{`Order Id: ${item.unique_code}`}   </Text>
+                        </View>
+                   
+                        <View style={{flex:1,marginLeft:10}}> 
+                            <Text style={{fontSize:14,color:'red'}}>{`Price: ${item.amount}`} </Text>
+                        </View>
+              
+                    <View style={{flexDirection:'row',flex:1,paddingVertical:5}}>
+                        <View style={{flex:0.7,margin:10}}> 
+                            <Text style={{fontSize:14,color:'#000'}}> {`Tax Amount: ${item.tax_amount}`}</Text>
+                        </View>
+                        <View style={{flex:0.2,margin:10}}> 
+                            <Text style={{fontSize:12,color:'green'}}> Recieved </Text>
+                        </View>
                     </View>
-                    <View style={{flex:1,flexDirection:'row'}}>
-                    <Text style={styles.reviewtext31}>Tax Amount: $10</Text>
-                    <Text style={styles.reviewrating1}>Recieved</Text>
+                    <View style={{flexDirection:'row',flex:1,paddingVertical:5}}>
+                        <View style={{flex:0.7,marginLeft:10}}> 
+                            <Text style={{fontSize:14,color:'red'}}>{`Discount Amount: ${item.discount_amount}`}</Text>
+                        </View>
+                        <View style={{flex:0.3,marginLeft:10}}> 
+                            <Text style={{fontSize:13}}> {`${item.order_date}`}</Text>
+                        </View>
                     </View>
-                    <View style={{flex:1,flexDirection:'row'}}>
-                    <Text style={styles.reviewtext32}>Discount Amount: $10</Text>
-                    <Text style={styles.reviewrating2}>April 5,2019</Text>
-                    </View>
-                    <View style={{flexDirection:'row'}}>
-                    <Text style={{top:-45,fontSize:15,left:10,fontWeight:'400'}}>Item1,Item2,Item3</Text>   
+                  
+                    <View style={{flex:1,margin:10}}>
+                         <Text style={{fontSize:14}}>Item1,Item2,Item3</Text>   
                     </View>
                     <View style={styles.hrline}/>
-                    <View style={{flexDirection:'row'}}>
-                    <TouchableOpacity>
-                    <Text style={{color:'red',left:250}}>View Details</Text>
+                    <TouchableOpacity style={styles.details} onPress={()=>this.props.navigation.navigate('Order_details',{item})}>
+                         <Text style={{color:'#000',fontSize:15,fontWeight:'bold',textAlign:'center'}}>View Details</Text>
                     </TouchableOpacity>
-                    </View>
-                 </View>
-           </View>
+                    </View>}
+            />   
+           </ScrollView>
            );
 
     }
 }
+
+const mapStateToProps = state => { return state; };
+
+export default connect(mapStateToProps,actions)(My_order);
+
 const styles = StyleSheet.create({
     container: {
       flex: 1,
       flexDirection:'column',
-      marginTop:10,
-      backgroundColor:"#f0f0f0",
-     // height:'auto'
+      backgroundColor:"#f7f7f7",
+      height:height,
+      margin:10
     },
     lefticon:{
         padding : 10
@@ -72,54 +106,26 @@ const styles = StyleSheet.create({
      reviewcontainer:{
         position: 'relative',
         backgroundColor:'#fff',
-        top:20,
         marginBottom:10,
-        height:200,
+        height:height/4,
         borderRadius: 10,
         width:'95%',
         marginLeft:8,
         elevation: 2,
         // flexDirection:'row'
     },
-    reviewtext3:{
-        left:10,
-        top:10,
-        fontSize:15,
-        
-       // fontWeight:500 
-      },
-      reviewtext31:{
-        left:10,
-        top:-10,
-        fontSize:15,
-        
-       // fontWeight:500 
-      },
-      reviewtext32:{
-        left:10,
-        top:-25,
-        fontSize:15,
-      color:'red'
-      },
-      reviewrating:{
-        left:100,
-        top:10,
-        color:'red'
-    },
-    reviewrating1:{
-        left:150,
-        top:-10,
-        color:'green'
-    },
-    reviewrating2:{
-        left:100,
-        top:-25,
-       
-    },
+   
     hrline:{
-        borderBottomColor: 'green',
+        borderBottomColor: '#f7f7f7',
         borderBottomWidth: 1,
-        top:-20
+        // paddingVertical:10
         },
+
+    details:{
+        flex:1,
+        justifyContent:'flex-end',
+        alignItems:'flex-end',
+        padding:10
+    }
    
 });

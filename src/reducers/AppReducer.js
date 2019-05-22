@@ -16,7 +16,8 @@ const INITIAL_STATE = { rows: [], loading: false,city: [],
     selectedBuildingDuringCheckout:"",
     total_cart_value:0,
     tax_rate:0,
-    discount_rate:0
+    discount_rate:0,
+    my_bookings:[]
   };
 
 export default (state = INITIAL_STATE, action) => {
@@ -42,6 +43,8 @@ export default (state = INITIAL_STATE, action) => {
     return {...state, tax_rate : action.payload}
     case 'discount_rate':
     return {...state,discount_rate:action.payload}
+    case 'my_bookings':
+    return {...state,my_bookings:action.payload}
         
     case PUSH_ROW:
    
