@@ -15,6 +15,10 @@ export const applyCoupon = (formData)=>{
     return axios.post(serviceurl + '/check_coupon',formData);
 }
 
+export const make_payment = (formData)=>{
+    return axios.post( 'https://ezzybitetest.azurewebsites.net/payment/mobile.php',formData);
+}
+
 export const update_password = (formData)=>{
     return axios.post(serviceurl + '/update_password',formData);
 }
