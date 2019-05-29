@@ -55,7 +55,7 @@ class Home extends Component {
         this.props.setProducts({ prop: 'cart_products', value: [] });        
         this.props.setProducts({ prop: 'cart_products', value: res.data.cart_products });
         const unique = [...new Set(res.data.cart_products.map(item => item.parent_id))];
-        this.props.setCartLength({prop: 'cart_length',value :unique.length })
+        this.props.setCartLength({prop: 'cart_length',value : res.data.cartcount })
       }
     }).catch(error => {
       console.log('error', error);
