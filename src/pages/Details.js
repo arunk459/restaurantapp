@@ -232,7 +232,7 @@ class Details extends Component {
                  </TouchableOpacity>
                  <TouchableOpacity onPress={() =>this.props.navigation.navigate('MyCart')} style={{paddingRight:20,flexDirection:'row',alignItems:'center'}}>
                  <Fonticons name="shopping-cart" size={25} color="#000" />
-                 <Text>{`(${this.props.app.cart.length})`}</Text>
+                 <Text>{`(${this.props.app.cart_length})`}</Text>
                  </TouchableOpacity>
               </View>
               {/* <View style={{flex:0.65,flexDirection:'column'}}>

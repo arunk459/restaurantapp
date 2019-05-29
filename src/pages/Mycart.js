@@ -54,6 +54,8 @@ class Mycart extends Component {
         this.props.setProducts({ prop: 'cart_products', value: [] });
         this.props.setProducts({ prop: 'cart_products', value: res.data.cart_products });
         this.props.setCartTotal({prop: 'total_cart_value',value : ( Math.round(parseFloat(res.data.total)* 1e2) )/1e2})
+        const unique = [...new Set(res.data.cart_products.map(item => item.parent_id))];
+        this.props.setCartLength({prop: 'cart_length',value :unique.length })
       }
     }).catch(error => {
       console.log('error', error);

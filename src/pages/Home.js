@@ -54,6 +54,8 @@ class Home extends Component {
       if (res.data.status == 1) {
         this.props.setProducts({ prop: 'cart_products', value: [] });        
         this.props.setProducts({ prop: 'cart_products', value: res.data.cart_products });
+        const unique = [...new Set(res.data.cart_products.map(item => item.parent_id))];
+        this.props.setCartLength({prop: 'cart_length',value :unique.length })
       }
     }).catch(error => {
       console.log('error', error);
@@ -278,7 +280,7 @@ class Home extends Component {
               </TouchableOpacity>
                  <TouchableOpacity onPress={() =>this.props.navigation.navigate('MyCart')} style={{paddingRight:20,flexDirection:'row',alignItems:'center'}}>
                  <Ionicons name="shopping-cart" size={25} color="#000" />
-                 <Text>{`(${this.props.app.cart.length})`}</Text>
+                 <Text>{`(${this.props.app.cart_length})`}</Text>
                  </TouchableOpacity>
               </View>
         </View>
