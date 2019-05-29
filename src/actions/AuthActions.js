@@ -75,6 +75,13 @@ export const setCartTotal = ({ prop, value }) => {
   };
 };
 
+export const setCartLength = ({ prop, value }) => {
+  return {
+    type: prop,
+    payload:  value 
+  };
+};
+
 export const setFavouriteProducts = ({ prop, value }) => {
   return {
     type: prop,
